@@ -24,7 +24,7 @@ public class Context_box {
 			br = new BufferedReader(in);
 			while((line = br.readLine()) != null )
 			{
-				
+				//line = line.toLowerCase();
 				count++;
 				hm2.put(count, line);
 				FileReader in1 = new FileReader("/home/abhi/workspace1/hello/WebContent/"+line);
@@ -33,6 +33,7 @@ public class Context_box {
 				int count1 = 0;
 				while((line1 = br1.readLine()) != null )
 				{
+					line1 = line1.toLowerCase();
 					String tokens[] = line1.split(" ");
 					int size = tokens.length;
 
@@ -40,9 +41,10 @@ public class Context_box {
 					for(int i=0; i < size; i++)
 					{
 						
-
+						tokens[i] = tokens[i].replaceAll("[^a-z A-Z0-9]", "");
 						if(hm.containsKey(tokens[i]) == false )
 						{
+							
 							/* we are only incrementing count word is not a stopword*/
 							count1++;
 							if(hm1.containsKey(tokens[i]) == false)
@@ -102,7 +104,6 @@ public class Context_box {
 			ArrayList< Pair<Integer,ArrayList<Integer> > > as = hm1.get(str);
 			for(Pair<Integer,ArrayList<Integer> > o : as)
 			{
-				//System.out.println(o.getFirst());
 				As.add("hello/"+hm2.get(o.getFirst()));
 			}
 		}
@@ -181,6 +182,7 @@ public class Context_box {
 					if(a22 ==-1 || a33 == -1 || a44 == -1)
 						continue;
 					result.add("hello/"+hm2.get(pp.getFirst()));
+					break;
 					
 				}
 				
@@ -209,7 +211,7 @@ public class Context_box {
 				int a2 = index(as2,(int)pp.getFirst());
 			//	System.out.print(hm2.get(pp.getFirst()));
 				int a3 = index(as3,(int)pp.getFirst());
-			//	System.out.println(" "+a2+" "+a3);
+				System.out.println(pp.getFirst());
 				if(a2 == -1 || a3 == -1)
 					continue;
 				//System.out.println(hm2.get(pp.getFirst()));
@@ -218,9 +220,10 @@ public class Context_box {
 					int a22 = index1(as2.get(a2).getSecond(),i+1);
 					int a33 = index1(as3.get(a3).getSecond(),i+2);
 				//	int a44 = index1(as4.get(a4).getSecond(),i+3);
-					if(a22 ==-1 || a33 == -1)
+					if(a22 == -1 || a33 == -1)
 						continue;
 					result.add("hello/"+hm2.get((int)pp.getFirst()));
+					break;
 					
 				}
 				
@@ -236,37 +239,43 @@ public class Context_box {
 	
 	ArrayList<String> search2(String str)
 	{
-		String tokens[] = str.split(" ");
-		int size = tokens.length;
-		//System.out.println(tokens[1]);
 		ArrayList<String> result = new ArrayList<String>();
-		ArrayList< Pair<Integer,ArrayList<Integer> > > as1 = hm1.get(tokens[0]);
-		ArrayList< Pair<Integer,ArrayList<Integer> > > as2 = hm1.get(tokens[1]);
-		//System.out.println(as1.size() + " " + as2.size());
-		for(Pair<Integer,ArrayList<Integer> > pp1 : as1)
+		try
 		{
-			ArrayList<Integer> ass1 = pp1.getSecond();
-			//System.out.println(pp1.getFirst());
-			for(Integer ppp1 : ass1)
+			String words[] = str.split(" ");
+			ArrayList<Pair<Integer,ArrayList<Integer> > > as1 = hm1.get(words[0]);
+			ArrayList<Pair<Integer,ArrayList<Integer> > > as2 = hm1.get(words[1]);
+			//ArrayList<Pair<Integer,ArrayList<Integer> > > as3 = hm1.get(words[2]);
+			//ArrayList<Pair<Integer,ArrayList<Integer> > > as4 = hm1.get(words[3]);
+			//System.out.println(as4.get(0).getFirst());
+			for(Pair<Integer,ArrayList<Integer> > pp : as1)
 			{
-				//System.out.print(ppp1+" ");
-				for(Pair<Integer,ArrayList<Integer> > pp2 : as2)
+				int a2 = index(as2,(int)pp.getFirst());
+				System.out.println(pp.getFirst());
+			//	System.out.print(hm2.get(pp.getFirst()));
+				//int a3 = index(as3,(int)pp.getFirst());
+			//	System.out.println(" "+a2+" "+a3);
+				if(a2 == -1 )
+					continue;
+				//System.out.println(hm2.get(pp.getFirst()));
+				for(int i : pp.getSecond())
 				{
-					//System.out.println(pp2.getFirst()+ " " + pp1.getFirst());
-					if(pp1.getFirst().hashCode() == pp2.getFirst().hashCode())
-					{
-				//		System.out.println("yoyoyb");
-						ArrayList<Integer> ass2 = pp2.getSecond();
-						for(Integer ppp2: ass2)
-						{
-							if(ppp1 == ppp2-1)
-							{
-								result.add("hello/"+hm2.get(pp1.getFirst()));
-							}
-						}
-					}
+					int a22 = index1(as2.get(a2).getSecond(),i+1);
+				//	int a33 = index1(as3.get(a3).getSecond(),i+2);
+				//	int a44 = index1(as4.get(a4).getSecond(),i+3);
+					if(a22 == -1)
+						continue;
+					result.add("hello/"+hm2.get((int)pp.getFirst()));
+					break;
+					
 				}
+				
+				
 			}
+		}
+		catch(Exception e)
+		{
+			
 		}
 		return result;
 	}
@@ -312,6 +321,10 @@ public class Context_box {
 		ArrayList<Pair<String,ArrayList<String> > > result = new ArrayList<Pair<String,ArrayList<String> > >();
 		String words[] = str.split(" ");
 		int size = words.length;
+		for(int i = 0 ; i < size ; i++)
+		{
+			words[i] = words[i].replaceAll("[^a-z A-Z0-9]", "");
+		}
 		if(size == 0)
 			return null;
 		for(int i = size-1 ; i >=0 ; i--)
@@ -331,23 +344,39 @@ public class Context_box {
 				Pair<String,ArrayList<String> > pi;
 				if(len == 4)
 				{
-					pi = new Pair<String,ArrayList<String> >(qq,search4(qq));
-					result.add(pi);
+					ArrayList<String> as = search4(qq);
+					if(as.size() != 0)
+					{
+						pi = new Pair<String,ArrayList<String> >(qq,as);
+						result.add(pi);
+					}
 				}
 				else if(len == 3)
 				{
-					pi = new Pair<String,ArrayList<String> >(qq,search3(qq));
-					result.add(pi);
+					ArrayList<String> as = search3(qq);
+					if(as.size() != 0)
+					{
+						pi = new Pair<String,ArrayList<String> >(qq,as);
+						result.add(pi);
+					}
 				}
 				else if(len == 2)
 				{
-					pi = new Pair<String,ArrayList<String> >(qq,search2(qq));
-					result.add(pi);
+					ArrayList<String> as = search2(qq);
+					if(as.size() != 0)
+					{
+						pi = new Pair<String,ArrayList<String> >(qq,as);
+						result.add(pi);
+					}
 				}
 				else if(len == 1)
 				{
-					pi = new Pair<String,ArrayList<String> >(qq,search(qq));
-					result.add(pi);
+					ArrayList<String> as = search(qq);
+					if(as.size() != 0)
+					{
+						pi = new Pair<String,ArrayList<String> >(qq,as);
+						result.add(pi);
+					}
 				}
 				x++;
 				y++;
@@ -371,3 +400,4 @@ public class Context_box {
 		}
 	}*/
 }
+
